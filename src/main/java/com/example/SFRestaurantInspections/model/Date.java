@@ -53,7 +53,7 @@ public class Date implements Comparable<Date>{
 		if(date == null) throw new IllegalArgumentException("date is null");
 
 		if(date.length() != 10 && date.length() != 8) {
-			throw new IllegalArgumentException("invalid date format: incorrect length");
+			throw new IllegalArgumentException("invalid date format: incorrect length. Expected length 8 or 10 and got length " + date.length());
 		}
 		else {
 			for(int i = 0; i<date.length(); i++) {

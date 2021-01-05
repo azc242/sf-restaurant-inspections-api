@@ -1,6 +1,8 @@
 package com.example.SFRestaurantInspections.model;
 import java.util.Comparator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
 @author Alan Chen
 * Stores information about the restaurant inspection
@@ -9,7 +11,7 @@ import java.util.Comparator;
 public class Inspection{
 	
 	private Date date;
-	private int score;
+	private Integer score; // must use Object wrapper to allow optional null
 	private String violation;
 	private String risk;
 	
@@ -17,7 +19,10 @@ public class Inspection{
 	 * @throws IllegalArgumentException when date is null or 
 	 * when score is not from 0-100 (inclusive)
 	 * */
-	public Inspection (Date date, int score, String violation, String risk) throws IllegalArgumentException{
+	public Inspection (@JsonProperty("date") Date date, 
+			@JsonProperty("score") int score, 
+			@JsonProperty("violation") String violation, 
+			@JsonProperty("risk") String risk) throws IllegalArgumentException{
 		if(date == null) {
 			throw new IllegalArgumentException("Date cannot be null");
 		}
