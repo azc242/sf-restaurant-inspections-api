@@ -33,6 +33,7 @@ public class RestaurantController {
 	
 	@PostMapping
 	public void addRestaurant(@Valid @NonNull @RequestBody Restaurant res) {
+		System.out.println("controller");
 		resService.addRestaurant(res);
 	}
 	

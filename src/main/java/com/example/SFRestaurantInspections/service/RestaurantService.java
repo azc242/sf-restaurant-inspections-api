@@ -22,6 +22,7 @@ public class RestaurantService {
 	}
 	
 	public int addRestaurant(Restaurant res) {
+		System.out.println("RestaurantService");
 		return resDao.insertRestaurant(res);
 	}
 	

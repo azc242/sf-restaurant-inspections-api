@@ -10,6 +10,7 @@ public interface RestaurantDao {
 	int insertRestaurant(UUID id, Restaurant res);
 	
 	default int insertRestaurant(Restaurant res) {
+		System.out.println("generating UUID");
 		UUID id = UUID.randomUUID();
 		return insertRestaurant(id, res);
 	}

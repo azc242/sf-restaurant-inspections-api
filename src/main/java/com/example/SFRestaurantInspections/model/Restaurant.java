@@ -8,6 +8,8 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -17,29 +19,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class Restaurant implements Comparable<Restaurant> {
-	private final UUID id;
+	private UUID id;
 	@NotBlank
 	private String name;
 	private String zip;
 	private String address;
 	private String phone;
 	private ArrayList <Inspection> inspections = new ArrayList<Inspection>();
-	
-	
+
+	@Autowired(required=true)
 	public Restaurant(@JsonProperty("id") UUID id, 
-			@JsonProperty("name") String name, 
-			@JsonProperty("zip") String zip) throws IllegalArgumentException{
-		checkExceptions(name, zip);
-		this.id = id;
-		this.name = name;
-		this.zip = zip;
-	}
-	
-	public Restaurant(UUID id, 
 			@JsonProperty("name") String name, 
 			@JsonProperty("zip") String zip, 
 			@JsonProperty("address") String address, 
 			@JsonProperty("phone") String phone) throws IllegalArgumentException {
+		System.out.println("2nd constructor\n");
 		checkExceptions(name, zip);
 		this.id = id;
 		this.name = name;
@@ -50,6 +44,10 @@ public class Restaurant implements Comparable<Restaurant> {
 	
 	public UUID getId() {
 		return id;
+	}
+	
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	/**

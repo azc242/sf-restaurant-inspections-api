@@ -16,6 +16,8 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 
 	@Override
 	public int insertRestaurant(UUID id, Restaurant res) {
+		System.out.println("FakeResDataAccessService");
+		res.setId(id);
 		DB.add(res); // if this starts to fail, create a new Restaurant object instance
 		return -1;
 	}
