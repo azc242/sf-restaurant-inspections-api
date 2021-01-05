@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.SFRestaurantInspections.model.Restaurant;
 
-@Repository("fakeDao")
+@Repository("fakeDaoRestaurant")
 public class FakeRestaurantDataAccessService implements RestaurantDao{
 	
 	private static List<Restaurant> DB = new ArrayList<>();

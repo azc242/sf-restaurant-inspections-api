@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.SFRestaurantInspections.model.Inspection;
 
-@Repository("fakedao")
+@Repository("fakeDaoInspection")
 public class FakeInspectionDataAccessService implements InspectionDao{
 
 	private static List<Inspection> DB = new ArrayList<>();

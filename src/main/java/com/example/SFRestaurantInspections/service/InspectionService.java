@@ -16,7 +16,7 @@ public class InspectionService {
 	private final InspectionDao inspectionDao;
 	
 	@Autowired
-	public InspectionService(@Qualifier("fakedao") InspectionDao inspectionDao) {
+	public InspectionService(@Qualifier("fakeDaoInspection") InspectionDao inspectionDao) {
 		this.inspectionDao = inspectionDao;
 	}
 	

@@ -17,7 +17,7 @@ public class RestaurantService {
 	private final RestaurantDao resDao;
 	
 	@Autowired
-	public RestaurantService(@Qualifier("fakedao") RestaurantDao resDao) {
+	public RestaurantService(@Qualifier("fakeDaoRestaurant") RestaurantDao resDao) {
 		this.resDao = resDao;
 	}
 	
