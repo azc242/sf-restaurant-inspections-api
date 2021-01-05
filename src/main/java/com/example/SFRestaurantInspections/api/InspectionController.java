@@ -2,7 +2,10 @@ package com.example.SFRestaurantInspections.api;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.SFRestaurantInspections.model.Date;
 import com.example.SFRestaurantInspections.model.Inspection;
 import com.example.SFRestaurantInspections.service.InspectionService;
 
@@ -22,12 +24,12 @@ public class InspectionController {
 	private final InspectionService inspectionService;
 	
 	@Autowired
-	public InspectionController(InspectionService inspectionService) {
+	public InspectionController(@Qualifier("inspectionService") InspectionService inspectionService) {
 		this.inspectionService = inspectionService;
 	}
 	
 	@PostMapping
-	public void addInspection(@Validated @NonNull @RequestBody Inspection inspection) {
+	public void addInspection(@Valid @NonNull @RequestBody Inspection inspection) {
 		inspectionService.addInspection(inspection);
 	}
 	

@@ -15,7 +15,8 @@ public class FakeInspectionDataAccessService implements InspectionDao{
 
 	@Override
 	public int insertInspection(Inspection inspection) {
-		DB.add(new Inspection(inspection.getDate(), inspection.getScore(), inspection.getViolation(), inspection.getRisk()));
+		DB.add(inspection);
+//		DB.add(new Inspection(inspection.getDate(), inspection.getScore(), inspection.getViolation(), inspection.getRisk()));
 		return 1;
 	}
 

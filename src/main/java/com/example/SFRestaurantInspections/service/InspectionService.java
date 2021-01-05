@@ -10,6 +10,7 @@ import com.example.SFRestaurantInspections.dao.InspectionDao;
 import com.example.SFRestaurantInspections.model.Inspection;
 
 @Service
+@Qualifier("inspectionService")
 public class InspectionService {
 	
 	private final InspectionDao inspectionDao;

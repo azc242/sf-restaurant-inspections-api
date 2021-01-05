@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.UUID;
+
+import javax.validation.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *@author Alan Chen
@@ -12,6 +17,8 @@ import java.util.Comparator;
  */
 
 public class Restaurant implements Comparable<Restaurant> {
+	private final UUID id;
+	@NotBlank
 	private String name;
 	private String zip;
 	private String address;
@@ -19,20 +26,32 @@ public class Restaurant implements Comparable<Restaurant> {
 	private ArrayList <Inspection> inspections = new ArrayList<Inspection>();
 	
 	
-	public Restaurant(String name, String zip) throws IllegalArgumentException{
+	public Restaurant(@JsonProperty("id") UUID id, 
+			@JsonProperty("name") String name, 
+			@JsonProperty("zip") String zip) throws IllegalArgumentException{
 		checkExceptions(name, zip);
+		this.id = id;
 		this.name = name;
 		this.zip = zip;
 	}
 	
-	public Restaurant(String name, String zip, String address, String phone) throws IllegalArgumentException {
+	public Restaurant(UUID id, 
+			@JsonProperty("name") String name, 
+			@JsonProperty("zip") String zip, 
+			@JsonProperty("address") String address, 
+			@JsonProperty("phone") String phone) throws IllegalArgumentException {
 		checkExceptions(name, zip);
+		this.id = id;
 		this.name = name;
 		this.zip = zip;
 		this.address = address;
 		this.phone = phone;
 	}
 	
+	public UUID getId() {
+		return id;
+	}
+
 	/**
 	 * Method that checks whether the name and ZIP code parameters are valid,
 	 * throws exception if not
