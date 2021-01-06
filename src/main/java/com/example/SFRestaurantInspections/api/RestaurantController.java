@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SFRestaurantInspections.model.Restaurant;
@@ -33,12 +35,12 @@ public class RestaurantController {
 	
 	@PostMapping
 	public void addRestaurant(@Valid @NonNull @RequestBody Restaurant res) {
-		System.out.println("controller");
 		resService.addRestaurant(res);
 	}
 	
 	@GetMapping
 	public List<Restaurant> getAllRestaurants() {
+		System.out.println("43");
 		return resService.getAllRestaurants();
 	}
 	
@@ -46,6 +48,18 @@ public class RestaurantController {
 	public Restaurant getRestaurantById(@PathVariable("id") UUID id) {
 		return resService.getRestaurantById(id)
 				.orElse(null);
+	}
+	
+	@GetMapping(path = "/?name={name}")
+	@ResponseBody
+	public List<Restaurant> getRestaurantByName(@RequestParam String name) {
+		System.out.println("53");
+		return resService.getRestaurantByName(name);
+	}
+	
+	@GetMapping(path = "{zip}")
+	public List<Restaurant> getRestaurantByZip(@PathVariable("zip") String zip) {
+		return resService.getRestaurantByZip(zip);
 	}
 	
 	@DeleteMapping(path = "{id}")

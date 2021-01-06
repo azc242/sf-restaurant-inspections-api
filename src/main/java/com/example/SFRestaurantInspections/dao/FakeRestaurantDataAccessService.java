@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +18,6 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 
 	@Override
 	public int insertRestaurant(UUID id, Restaurant res) {
-		System.out.println("FakeResDataAccessService");
 		res.setId(id);
 		DB.add(res); // if this starts to fail, create a new Restaurant object instance
 		return -1;
@@ -56,6 +57,25 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 					return 0;
 				})
 				.orElse(0);
+	}
+	
+	/*
+	 * The following two methods need testing to see if they work 
+	 * and if they work for edge cases too
+	 */
+
+	@Override
+	public List<Restaurant> selectRestaurantByName(String name) {
+		return DB.stream()
+				.filter(res -> res.getName().equals(name))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Restaurant> selectRestaurantByZip(String zip) {
+		return DB.stream()
+				.filter(res -> res.getZip().equals(zip))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -33,7 +33,6 @@ public class Restaurant implements Comparable<Restaurant> {
 			@JsonProperty("zip") String zip, 
 			@JsonProperty("address") String address, 
 			@JsonProperty("phone") String phone) throws IllegalArgumentException {
-		System.out.println("2nd constructor\n");
 		checkExceptions(name, zip);
 		this.id = id;
 		this.name = name;

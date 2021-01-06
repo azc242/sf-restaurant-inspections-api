@@ -22,7 +22,6 @@ public class RestaurantService {
 	}
 	
 	public int addRestaurant(Restaurant res) {
-		System.out.println("RestaurantService");
 		return resDao.insertRestaurant(res);
 	}
 	
@@ -32,6 +31,14 @@ public class RestaurantService {
 	
 	public Optional<Restaurant> getRestaurantById(UUID id) {
 		return resDao.selectRestaurantById(id);
+	}
+	
+	public List<Restaurant> getRestaurantByName(String name) {
+		return resDao.selectRestaurantByName(name);
+	}
+	
+	public List<Restaurant> getRestaurantByZip(String Zip) {
+		return resDao.selectRestaurantByZip(Zip);
 	}
 	
 	public int deleteRestaurant(UUID id) {

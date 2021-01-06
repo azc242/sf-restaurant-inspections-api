@@ -1,5 +1,6 @@
 package com.example.SFRestaurantInspections.model;
 import java.util.Comparator;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Inspection{
 	
+	private UUID id; // ID of the restaurant, not unique for each inspection
 	private Date date;
 	private Integer score; // must use Object wrapper to allow optional null
 	private String violation;
@@ -61,6 +63,12 @@ public class Inspection{
 	 */
 	public String getRisk() {
 		return risk;
+	}
+	public UUID getId() {
+		return id;
+	}
+	public void setId(UUID id) {
+		this.id = id;
 	}
 }
 

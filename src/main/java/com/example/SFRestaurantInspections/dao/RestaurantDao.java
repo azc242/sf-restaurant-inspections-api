@@ -3,6 +3,7 @@ package com.example.SFRestaurantInspections.dao;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.example.SFRestaurantInspections.model.Restaurant;
 
@@ -18,6 +19,10 @@ public interface RestaurantDao {
 	List<Restaurant> selectAllRestaurants();
 	
 	Optional<Restaurant> selectRestaurantById(UUID id);
+	
+	List<Restaurant> selectRestaurantByName(String name);
+	
+	List<Restaurant> selectRestaurantByZip(String zip);
 	
 	int deleteRestaurantById(UUID id);
 	
