@@ -40,7 +40,6 @@ public class RestaurantController {
 	
 	@GetMapping
 	public List<Restaurant> getAllRestaurants() {
-		System.out.println("43");
 		return resService.getAllRestaurants();
 	}
 	
@@ -50,15 +49,13 @@ public class RestaurantController {
 				.orElse(null);
 	}
 	
-	@GetMapping(path = "/?name={name}")
-	@ResponseBody
+	@GetMapping(params= {"name"})
 	public List<Restaurant> getRestaurantByName(@RequestParam String name) {
-		System.out.println("53");
 		return resService.getRestaurantByName(name);
 	}
 	
-	@GetMapping(path = "{zip}")
-	public List<Restaurant> getRestaurantByZip(@PathVariable("zip") String zip) {
+	@GetMapping(params= {"zip"})
+	public List<Restaurant> getRestaurantByZip(@RequestParam String zip) {
 		return resService.getRestaurantByZip(zip);
 	}
 	
