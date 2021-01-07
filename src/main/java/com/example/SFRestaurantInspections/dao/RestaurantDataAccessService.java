@@ -78,26 +78,46 @@ public class RestaurantDataAccessService implements RestaurantDao{
 
 	@Override
 	public List<Restaurant> selectRestaurantsByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		final String sql = "SELECT * FROM restaurant WHERE name = ?"; 
+		return jdbcTemplate.query(sql, (resultSet, i) -> {
+			UUID restaurant_id = UUID.fromString(resultSet.getString("id"));
+			String zip = resultSet.getString("zip");
+			String address = resultSet.getString("address");
+			String phone = resultSet.getString("phone");
+			return new Restaurant(restaurant_id, name, zip, address, phone);
+		});
 	}
 
 	@Override
 	public List<Restaurant> selectRestaurantsByZip(String zip) {
-		// TODO Auto-generated method stub
-		return null;
+		final String sql = "SELECT * FROM restaurant WHERE name = ?"; 
+		return jdbcTemplate.query(sql, (resultSet, i) -> {
+			UUID restaurant_id = UUID.fromString(resultSet.getString("id"));
+			String name = resultSet.getString("name");
+			String address = resultSet.getString("address");
+			String phone = resultSet.getString("phone");
+			return new Restaurant(restaurant_id, name, zip, address, phone);
+		});
 	}
 
 	@Override
 	public int deleteRestaurantById(UUID id) {
-		// TODO Auto-generated method stub
-		return 0;
+		String sql = "" +
+                "DELETE FROM restaurant " +
+                "WHERE id = ?";
+		return jdbcTemplate.update(sql, id);
 	}
 
 	@Override
 	public int updateRestaurantById(UUID id, Restaurant res) {
-		// TODO Auto-generated method stub
-		return 0;
+		String sql = "" +
+				"UPDATE restaurant " +
+                "SET name = ?, " +
+                "zip = ?, " +
+                "address = ?, " + 
+                "phone = ? " +
+                "WHERE id = ?";
+		return jdbcTemplate.update(sql, res.getName(), res.getZip(), res.getAddress(), res.getPhone(), id);
 	}
 
 	
