@@ -11,37 +11,6 @@ public class Date implements Comparable<Date>{
 	private int month;
 	private int day;
 	private int year;
-	
-	/**
-	 * gets string date
-	 * @return date
-	 */
-	public String getDate() {
-		return Date;
-	}
-	/**
-	 * gets month
-	 * @return int month
-	 */
-	public int getMonth() {
-		return month;
-	}
-	/**
-	 * gets day
-	 * @return int day
-	 */
-
-	public int getDay() {
-		return day;
-	}
-
-	/**
-	 * gets year
-	 * @return int year
-	 */
-	public int getYear() {
-		return year;
-	}
 
 	/**
 	 * 
@@ -212,6 +181,38 @@ public class Date implements Comparable<Date>{
 		total_days += x.getDay();
 		return total_days;
 	}
+	
+	/**
+	 * gets string date
+	 * @return date
+	 */
+	public String getDate() {
+		return Date;
+	}
+	/**
+	 * gets month
+	 * @return int month
+	 */
+	public int getMonth() {
+		return month;
+	}
+	/**
+	 * gets day
+	 * @return int day
+	 */
+
+	public int getDay() {
+		return day;
+	}
+
+	/**
+	 * gets year
+	 * @return int year
+	 */
+	public int getYear() {
+		return year;
+	}
+	
 	/**
 	 * overrides toString method
 	 * @return Date

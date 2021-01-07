@@ -77,5 +77,4 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 				.filter(res -> res.getZip().equals(zip))
 				.collect(Collectors.toList());
 	}
-
 }
