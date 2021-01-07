@@ -21,7 +21,8 @@ public class Inspection{
 	 * @throws IllegalArgumentException when date is null or 
 	 * when score is not from 0-100 (inclusive)
 	 * */
-	public Inspection (@JsonProperty("date") Date date, 
+	public Inspection (@JsonProperty("id") UUID id,
+			@JsonProperty("date") Date date, 
 			@JsonProperty("score") int score, 
 			@JsonProperty("violation") String violation, 
 			@JsonProperty("risk") String risk) throws IllegalArgumentException{
@@ -31,6 +32,7 @@ public class Inspection{
 		if(score < 0 || score > 100) {
 			throw new IllegalArgumentException("Invalid score range");
 		}
+		this.id = id;
 		this.date = date;
 		this.score = score;
 		this.violation = violation;
