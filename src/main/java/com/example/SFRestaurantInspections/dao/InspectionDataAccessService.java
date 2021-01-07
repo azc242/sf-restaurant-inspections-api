@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.example.SFRestaurantInspections.model.Date;
 import com.example.SFRestaurantInspections.model.Inspection;
 
+@Repository("postgres-inspection")
 public class InspectionDataAccessService implements InspectionDao{
 
 	private final JdbcTemplate jdbcTemplate;
 	
+	@Autowired
 	public InspectionDataAccessService(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -25,8 +29,8 @@ public class InspectionDataAccessService implements InspectionDao{
 				" date," + 
 				" score," + 
 				" violation," + 
-				"risk) " + 
-				"VALUES (?, ?, ?, ?, ?)";
+				" risk) " + 
+				" VALUES (?, ?, ?, ?, ?)";
 		
 		String inspDate = inspection.getDate() == null ? null : inspection.getDate().getDate();
 		
@@ -42,9 +46,9 @@ public class InspectionDataAccessService implements InspectionDao{
 
 	@Override
 	public List<Inspection> selectAllInspections() {
-		final String sql = "SELECT id, date, score, violation, risk FROM inspection"; 
+		final String sql = "SELECT restaurant_id, date, score, violation, risk FROM inspection"; 
 		return jdbcTemplate.query(sql, (resultSet, i) -> {
-			UUID id = UUID.fromString(resultSet.getString("id"));
+			UUID id = UUID.fromString(resultSet.getString("restaurant_id"));
 			String date = resultSet.getString("date");
 			Integer score = Integer.parseInt(resultSet.getString("score"));
 			String violation = resultSet.getString("violation");
@@ -56,9 +60,9 @@ public class InspectionDataAccessService implements InspectionDao{
 
 	@Override
 	public List<Inspection> selectInspectionsById(UUID id) {
-		final String sql = "SELECT id, date, score, violation, risk FROM inspection WHERE id = ?"; 
+		final String sql = "SELECT restaurant_id, date, score, violation, risk FROM inspection WHERE restaurant_id = ?"; 
 		return jdbcTemplate.query(sql, (resultSet, i) -> {
-			UUID restaurantId = UUID.fromString(resultSet.getString("id"));
+			UUID restaurantId = UUID.fromString(resultSet.getString("restaurant_id"));
 			String date = resultSet.getString("date");
 			Integer score = Integer.parseInt(resultSet.getString("score"));
 			String violation = resultSet.getString("violation");

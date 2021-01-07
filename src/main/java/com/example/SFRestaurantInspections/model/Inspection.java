@@ -21,7 +21,7 @@ public class Inspection{
 	 * @throws IllegalArgumentException when date is null or 
 	 * when score is not from 0-100 (inclusive)
 	 * */
-	public Inspection (@JsonProperty("id") UUID id,
+	public Inspection (@JsonProperty("restaurant_id") UUID id,
 			@JsonProperty("date") Date date, 
 			@JsonProperty("score") int score, 
 			@JsonProperty("violation") String violation, 

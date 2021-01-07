@@ -20,9 +20,9 @@ public interface RestaurantDao {
 	
 	Optional<Restaurant> selectRestaurantById(UUID id);
 	
-	List<Restaurant> selectRestaurantByName(String name);
+	List<Restaurant> selectRestaurantsByName(String name);
 	
-	List<Restaurant> selectRestaurantByZip(String zip);
+	List<Restaurant> selectRestaurantsByZip(String zip);
 	
 	int deleteRestaurantById(UUID id);
 	

@@ -16,7 +16,7 @@ public class InspectionService {
 	private final InspectionDao inspectionDao;
 	
 	@Autowired
-	public InspectionService(@Qualifier("fakeDaoInspection") InspectionDao inspectionDao) {
+	public InspectionService(@Qualifier("postgres-inspection") InspectionDao inspectionDao) {
 		this.inspectionDao = inspectionDao;
 	}
 	

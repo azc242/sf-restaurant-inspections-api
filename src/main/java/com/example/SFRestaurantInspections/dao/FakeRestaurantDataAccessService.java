@@ -65,14 +65,14 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 	 */
 
 	@Override
-	public List<Restaurant> selectRestaurantByName(String name) {
+	public List<Restaurant> selectRestaurantsByName(String name) {
 		return DB.stream()
 				.filter(res -> res.getName().equals(name))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Restaurant> selectRestaurantByZip(String zip) {
+	public List<Restaurant> selectRestaurantsByZip(String zip) {
 		return DB.stream()
 				.filter(res -> res.getZip().equals(zip))
 				.collect(Collectors.toList());

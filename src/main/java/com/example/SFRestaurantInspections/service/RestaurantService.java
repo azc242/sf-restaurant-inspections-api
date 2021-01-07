@@ -17,7 +17,7 @@ public class RestaurantService {
 	private final RestaurantDao resDao;
 	
 	@Autowired
-	public RestaurantService(@Qualifier("fakeDaoRestaurant") RestaurantDao resDao) {
+	public RestaurantService(@Qualifier("postgres-restaurant") RestaurantDao resDao) {
 		this.resDao = resDao;
 	}
 	
@@ -34,11 +34,11 @@ public class RestaurantService {
 	}
 	
 	public List<Restaurant> getRestaurantByName(String name) {
-		return resDao.selectRestaurantByName(name);
+		return resDao.selectRestaurantsByName(name);
 	}
 	
 	public List<Restaurant> getRestaurantByZip(String Zip) {
-		return resDao.selectRestaurantByZip(Zip);
+		return resDao.selectRestaurantsByZip(Zip);
 	}
 	
 	public int deleteRestaurant(UUID id) {
