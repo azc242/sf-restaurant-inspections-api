@@ -49,12 +49,12 @@ public class RestaurantController {
 				.orElse(null);
 	}
 	
-	@GetMapping(params= {"name"})
+	@GetMapping(params = {"name"})
 	public List<Restaurant> getRestaurantByName(@RequestParam String name) {
 		return resService.getRestaurantByName(name);
 	}
 	
-	@GetMapping(params= {"zip"})
+	@GetMapping(params = {"zip"})
 	public List<Restaurant> getRestaurantByZip(@RequestParam String zip) {
 		return resService.getRestaurantByZip(zip);
 	}
