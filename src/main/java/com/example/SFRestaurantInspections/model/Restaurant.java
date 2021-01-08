@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -25,7 +26,7 @@ public class Restaurant implements Comparable<Restaurant> {
 	private String zip;
 	private String address;
 	private String phone;
-	private ArrayList <Inspection> inspections = new ArrayList<Inspection>();
+	private List <Inspection> inspections = new ArrayList<Inspection>();
 
 	@Autowired(required=true)
 	public Restaurant(@JsonProperty("id") UUID id, 
@@ -47,6 +48,10 @@ public class Restaurant implements Comparable<Restaurant> {
 	
 	public void setId(UUID id) {
 		this.id = id;
+	}
+	
+	public void setInspections(List<Inspection> inspections) {
+		this.inspections = inspections;
 	}
 
 	/**
@@ -131,9 +136,12 @@ public class Restaurant implements Comparable<Restaurant> {
 	@Override
 	public String toString() {
 		
-		//sorts inspections
-		Collections.sort(inspections, new InspectSort());
-		//removes inspection if there is no score
+		if(inspections != null) {
+			//sorts inspections
+			Collections.sort(inspections, new InspectSort());
+			//removes inspection if there is no score
+		}
+		
 		
 		String addy = this.getAddress();
 		if(addy == null) addy = "";
@@ -160,7 +168,7 @@ public class Restaurant implements Comparable<Restaurant> {
 		String violation2 = "";
 		
 		//retrieves variables for string.format
-		if(inspections.size() > 0) {
+		if(inspections != null && inspections.size() > 0) {
 			score = inspections.get(0).getScore();
 			date =  inspections.get(0).getDate().getDate();
 			risk = ", " + inspections.get(0).getRisk();
@@ -209,7 +217,7 @@ public class Restaurant implements Comparable<Restaurant> {
 		//checks if date1 == date 2
 		if(date.equals(date2)) {
 			//checks if there are more inspections to print
-			if(inspections.size() > 1) {
+			if(inspections != null && inspections.size() > 1) {
 				tscore = inspections.get(2).getScore();
 				tdate =  inspections.get(2).getDate().getDate();
 				trisk = ", " + inspections.get(2).getRisk();
@@ -246,14 +254,15 @@ public class Restaurant implements Comparable<Restaurant> {
 		}
 		return (this.compareTo(z) == 0);
 	}
+	
 	/**
 	 * gets name
 	 * @return name
 	 */
-	
 	public String getName() {
 		return name;
 	}
+	
 	/**
 	 * gets zip
 	 * @return zip
@@ -262,6 +271,7 @@ public class Restaurant implements Comparable<Restaurant> {
 	public String getZip() {
 		return zip;
 	}
+	
 	/**
 	 * gets address
 	 * @return address
@@ -277,11 +287,12 @@ public class Restaurant implements Comparable<Restaurant> {
 	public String getPhone() {
 		return phone;
 	}
+	
 	/**
 	 * gets ArrayList of inspections
 	 * @return inspections
 	 */
-	public ArrayList<Inspection> getInspections() {
+	public List<Inspection> getInspections() {
 		return inspections;
 	}
 

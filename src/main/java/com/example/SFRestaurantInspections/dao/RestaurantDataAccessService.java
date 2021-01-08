@@ -1,5 +1,6 @@
 package com.example.SFRestaurantInspections.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -54,27 +55,66 @@ public class RestaurantDataAccessService implements RestaurantDao{
 			String address = resultSet.getString("address");
 			String phone = resultSet.getString("phone");
 			
-			return new Restaurant(id, name, zip, address, phone);
+			Restaurant r = new Restaurant(id, name, zip, address, phone);
+			InspectionDao inspect = new InspectionDataAccessService(new JdbcTemplate());
+			r.setInspections(inspect.selectInspectionsById(id)); // gets restaurant's inspections
+			return r;
 		});
 	}
 
 	@Override
 	public Optional<Restaurant> selectRestaurantById(UUID id) {
-		final String sql = "SELECT * FROM restaurant WHERE id = ?"; 
-		List<Restaurant> res = jdbcTemplate.query(
+//		final String sql = "SELECT * FROM restaurant WHERE id = ?"; 
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE r.id = ?";
+		boolean first = true;
+		List<Restaurant> res = new ArrayList<Restaurant>();
+		@SuppressWarnings("deprecation")
+		List<Restaurant> r = jdbcTemplate.query(
 				sql, 
 				new Object[] {id}, 
 				(resultSet, i) -> {
-			UUID restaurant_id = UUID.fromString(resultSet.getString("id"));
-			String name = resultSet.getString("name");
-			String zip = resultSet.getString("zip");
-			String address = resultSet.getString("address");
-			String phone = resultSet.getString("phone");
-			return new Restaurant(restaurant_id, name, zip, address, phone);
+
+			boolean restaurantAlreadyExists = false;
+			for(Restaurant temp : res) {
+				String name = resultSet.getString("name");
+				String zip = resultSet.getString("zip");
+				if(temp.getName().equals(name) && temp.getZip().equals(zip)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+					System.out.println("added");
+					restaurantAlreadyExists = true;
+				}
+			}
+			
+			if(!restaurantAlreadyExists) {
+				String name = resultSet.getString("name");
+				String zip = resultSet.getString("zip");
+				String address = resultSet.getString("address");
+				String phone = resultSet.getString("phone");
+				
+				Restaurant temp = new Restaurant(id, name, zip, address, phone);
+				Date date = new Date(resultSet.getString("date"));
+				Integer score = resultSet.getInt("score");
+				String violation = resultSet.getString("violation");
+				String risk = resultSet.getString("risk");
+				temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+				res.add(temp);
+				return temp;
+			}
+			return null;
 		});
+		
+		
+//		System.out.println(res.get(0));
+//		System.out.println(res.get(1));
 		Restaurant found = res.size() > 0 ? res.get(0) : null;
+
 		return Optional.ofNullable(found);
 	}
+
 
 	@Override
 	public List<Restaurant> selectRestaurantsByName(String name) {
@@ -96,6 +136,7 @@ public class RestaurantDataAccessService implements RestaurantDao{
 			String name = resultSet.getString("name");
 			String address = resultSet.getString("address");
 			String phone = resultSet.getString("phone");
+//			List<Inspection> = resultSet.getString("inspection");
 			return new Restaurant(restaurant_id, name, zip, address, phone);
 		});
 	}
