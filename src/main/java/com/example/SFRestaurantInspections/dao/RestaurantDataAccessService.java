@@ -47,22 +47,52 @@ public class RestaurantDataAccessService implements RestaurantDao{
 
 	@Override
 	public List<Restaurant> selectAllRestaurants() {
-		final String sql = "SELECT id, name, zip, address, phone FROM restaurant"; 
-		return jdbcTemplate.query(sql, (resultSet, i) -> {
-			UUID id = UUID.fromString(resultSet.getString("id"));
-			String name = resultSet.getString("name");
-			String zip = resultSet.getString("zip");
-			String address = resultSet.getString("address");
-			String phone = resultSet.getString("phone");
+//		final String sql = "SELECT id, name, zip, address, phone FROM restaurant"; 
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id";
+		List<Restaurant> res = new ArrayList<Restaurant>();
+		List<Restaurant> r = jdbcTemplate.query(
+				sql, 
+				(resultSet, i) -> {
+			boolean restaurantAlreadyExists = false;
+			for(Restaurant temp : res) {
+				String name1 = resultSet.getString("name");
+				String zip1 = resultSet.getString("zip");
+				if(temp.getName().equals(name1) && temp.getZip().equals(zip1)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+					restaurantAlreadyExists = true;
+				}
+			}
 			
-			Restaurant r = new Restaurant(id, name, zip, address, phone);
-			return r;
+			if(!restaurantAlreadyExists) {
+				String name1 = resultSet.getString("name");
+				String zip1 = resultSet.getString("zip");
+				String address = resultSet.getString("address");
+				String phone = resultSet.getString("phone");
+				
+				Restaurant temp = new Restaurant(UUID.fromString(resultSet.getString("id")), name1, zip1, address, phone);
+				if(!(resultSet.getString("date") == null)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+				}
+				res.add(temp);
+				return temp;
+			}
+			return null;
 		});
+		
+		return res;
 	}
 
 	@Override
 	public Optional<Restaurant> selectRestaurantById(UUID id) {
-//		final String sql = "SELECT * FROM restaurant WHERE id = ?"; 
+		// query requires exact ID match since this function returns just one Restaurant, if it exists
 		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE r.id = ?";
 		List<Restaurant> res = new ArrayList<Restaurant>();
 		@SuppressWarnings("deprecation")
@@ -98,7 +128,6 @@ public class RestaurantDataAccessService implements RestaurantDao{
 				String risk = resultSet.getString("risk");
 				temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
 				res.add(temp);
-//				return temp;
 			}
 			return null;
 		});
@@ -111,8 +140,9 @@ public class RestaurantDataAccessService implements RestaurantDao{
 
 	@Override
 	public List<Restaurant> selectRestaurantsByName(String name) {
+		name = name.toLowerCase();
 //		String sql = "SELECT id, name, zip, address, phone FROM restaurant WHERE name = ?"; 
-		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE r.name = ?";
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE LOWER(r.name) LIKE '%' || ? || '%'";
 		
 		List<Restaurant> res = new ArrayList<Restaurant>();
 		@SuppressWarnings("deprecation")
@@ -122,9 +152,9 @@ public class RestaurantDataAccessService implements RestaurantDao{
 				(resultSet, i) -> {
 			boolean restaurantAlreadyExists = false;
 			for(Restaurant temp : res) {
-//				String name = resultSet.getString("name");
+				String name1 = resultSet.getString("name");
 				String zip = resultSet.getString("zip");
-				if(temp.getName().equals(name) && temp.getZip().equals(zip)) {
+				if(temp.getName().equals(name1) && temp.getZip().equals(zip)) {
 					Date date = new Date(resultSet.getString("date"));
 					Integer score = resultSet.getInt("score");
 					String violation = resultSet.getString("violation");
@@ -135,12 +165,12 @@ public class RestaurantDataAccessService implements RestaurantDao{
 			}
 			
 			if(!restaurantAlreadyExists) {
-//				String name = resultSet.getString("name");
+				String name1 = resultSet.getString("name");
 				String zip = resultSet.getString("zip");
 				String address = resultSet.getString("address");
 				String phone = resultSet.getString("phone");
 				
-				Restaurant temp = new Restaurant(UUID.fromString(resultSet.getString("id")), name, zip, address, phone);
+				Restaurant temp = new Restaurant(UUID.fromString(resultSet.getString("id")), name1, zip, address, phone);
 				if(!(resultSet.getString("date") == null)) {
 					Date date = new Date(resultSet.getString("date"));
 					Integer score = resultSet.getInt("score");
@@ -155,27 +185,54 @@ public class RestaurantDataAccessService implements RestaurantDao{
 		});
 		
 		return res;
-		
-//		return jdbcTemplate.query(sql, (resultSet, i) -> {
-//			UUID restaurant_id = UUID.fromString(resultSet.getString("id"));
-//			String zip = resultSet.getString("zip");
-//			String address = resultSet.getString("address");
-//			String phone = resultSet.getString("phone");
-//			return new Restaurant(restaurant_id, name, zip, address, phone);
-//		});
 	}
 
 	@Override
 	public List<Restaurant> selectRestaurantsByZip(String zip) {
-		final String sql = "SELECT id, name, zip, address, phone FROM restaurant WHERE zip = ?"; 
-		return jdbcTemplate.query(sql, (resultSet, i) -> {
-			UUID restaurant_id = UUID.fromString(resultSet.getString("id"));
-			String name = resultSet.getString("name");
-			String address = resultSet.getString("address");
-			String phone = resultSet.getString("phone");
-//			List<Inspection> = resultSet.getString("inspection");
-			return new Restaurant(restaurant_id, name, zip, address, phone);
+		zip = zip.toLowerCase(); // not really needed since ZIP is just a string of numbers
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE LOWER(r.zip) LIKE '%' || ? || '%'";
+		
+		List<Restaurant> res = new ArrayList<Restaurant>();
+		@SuppressWarnings("deprecation")
+		List<Restaurant> r = jdbcTemplate.query(
+				sql, 
+				new Object[] {zip}, 
+				(resultSet, i) -> {
+			boolean restaurantAlreadyExists = false;
+			for(Restaurant temp : res) {
+				String name1 = resultSet.getString("name");
+				String zip1 = resultSet.getString("zip");
+				if(temp.getName().equals(name1) && temp.getZip().equals(zip1)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+					restaurantAlreadyExists = true;
+				}
+			}
+			
+			if(!restaurantAlreadyExists) {
+				String name1 = resultSet.getString("name");
+				String zip1 = resultSet.getString("zip");
+				String address = resultSet.getString("address");
+				String phone = resultSet.getString("phone");
+				
+				Restaurant temp = new Restaurant(UUID.fromString(resultSet.getString("id")), name1, zip1, address, phone);
+				if(!(resultSet.getString("date") == null)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+				}
+				res.add(temp);
+				return temp;
+			}
+			return null;
 		});
+		
+		return res;
 	}
 
 	@Override
