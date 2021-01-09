@@ -33,6 +33,14 @@ public class RestaurantService {
 		return resDao.selectRestaurantById(id);
 	}
 	
+	public Optional<Restaurant> getRestaurantByNameAndId(String name, UUID id) {
+		return resDao.selectRestaurantByNameAndId(name, id);
+	}
+	
+	public Optional<Restaurant> getRestaurantByNameAndZip(String name, String zip) {
+		return resDao.selectRestaurantByNameAndZip(name, zip);
+	}
+	
 	public List<Restaurant> getRestaurantByName(String name) {
 		return resDao.selectRestaurantsByName(name);
 	}

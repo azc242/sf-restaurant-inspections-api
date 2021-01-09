@@ -77,4 +77,16 @@ public class FakeRestaurantDataAccessService implements RestaurantDao{
 				.filter(res -> res.getZip().equals(zip))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public Optional<Restaurant> selectRestaurantByNameAndId(String name, UUID id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Restaurant> selectRestaurantByNameAndZip(String name, String zip) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

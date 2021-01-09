@@ -37,8 +37,6 @@ public class RestaurantDataAccessService implements RestaurantDao{
 				UUID personId = UUID.fromString(resultSet.getString("id"));
 				return personId;
 			});
-			
-			System.out.println(foundId);
 			// if we make it here, then there was a matching restaurant so we should just use the ID and insert new inspections
 			return -1;
 		}
@@ -156,7 +154,111 @@ public class RestaurantDataAccessService implements RestaurantDao{
 
 		return Optional.ofNullable(found);
 	}
+	
+	@Override
+	public Optional<Restaurant> selectRestaurantByNameAndId(String name, UUID id) {
+		name = name.toLowerCase();
+		// query requires exact ID match since this function returns just one Restaurant, if it exists
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE LOWER(r.name) = ? AND r.id = ?";
+		List<Restaurant> res = new ArrayList<Restaurant>();
+		@SuppressWarnings("deprecation")
+		List<Restaurant> r = jdbcTemplate.query(
+				sql, 
+				new Object[] {name, id}, 
+				(resultSet, i) -> {
 
+			boolean restaurantAlreadyExists = false;
+			for(Restaurant temp : res) {
+				String zip = resultSet.getString("zip");
+				String name1 = resultSet.getString("name");
+				if(name1 != null) name1 = name1.toLowerCase(); 
+				if(temp.getName().toLowerCase().equals(name1) && temp.getZip().equals(zip)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+					restaurantAlreadyExists = true;
+				}
+			}
+			
+			if(!restaurantAlreadyExists) {
+				String zip = resultSet.getString("zip");
+				String address = resultSet.getString("address");
+				String phone = resultSet.getString("phone");
+				String name1 = resultSet.getString("name");
+				
+				Restaurant temp = new Restaurant(id, name1, zip, address, phone);
+				try {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+				} catch(Exception e) {
+					// do nothing, retaurant had no inspections
+				}
+				res.add(temp);
+			}
+			return null;
+		});
+		
+		Restaurant found = res.size() > 0 ? res.get(0) : null;
+
+		return Optional.ofNullable(found);
+	}
+	
+	@Override
+	public Optional<Restaurant> selectRestaurantByNameAndZip(String name, String zip) {
+		name = name.toLowerCase();
+		// query requires exact ID match since this function returns just one Restaurant, if it exists
+		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id WHERE LOWER(r.name) = ? AND r.zip = ?";
+		List<Restaurant> res = new ArrayList<Restaurant>();
+		@SuppressWarnings("deprecation")
+		List<Restaurant> r = jdbcTemplate.query(
+				sql, 
+				new Object[] {name, zip}, 
+				(resultSet, i) -> {
+
+			boolean restaurantAlreadyExists = false;
+			for(Restaurant temp : res) {
+				String name1 = resultSet.getString("name");
+				if(name1 != null) name1 = name1.toLowerCase(); 
+				if(temp.getName().toLowerCase().equals(name1) && temp.getZip().equals(zip)) {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+					restaurantAlreadyExists = true;
+				}
+			}
+			
+			if(!restaurantAlreadyExists) {
+				UUID id = UUID.fromString(resultSet.getString("id"));
+				String address = resultSet.getString("address");
+				String phone = resultSet.getString("phone");
+				String name1 = resultSet.getString("name");
+				
+				Restaurant temp = new Restaurant(id, name1, zip, address, phone);
+				try {
+					Date date = new Date(resultSet.getString("date"));
+					Integer score = resultSet.getInt("score");
+					String violation = resultSet.getString("violation");
+					String risk = resultSet.getString("risk");
+					temp.getInspections().add(new Inspection(temp.getId(), date, score, violation, risk));
+				} catch(Exception e) {
+					// do nothing, retaurant had no inspections
+				}
+				res.add(temp);
+			}
+			return null;
+		});
+		
+		Restaurant found = res.size() > 0 ? res.get(0) : null;
+
+		return Optional.ofNullable(found);
+	}
 
 	@Override
 	public List<Restaurant> selectRestaurantsByName(String name) {

@@ -2,138 +2,170 @@ package com.example.SFRestaurantInspections;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.MediaType;
 
 import com.example.SFRestaurantInspections.model.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @SpringBootApplication
 public class SfRestaurantInspectionsApplication {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		SpringApplication.run(SfRestaurantInspectionsApplication.class, args);
 		
-long startTime = System.nanoTime();
+//		long startTime = System.nanoTime();
+//		
+//		//initializing ArrayLists to store each Object Type
+//		RestaurantList resList = new RestaurantList();
+//		
+//		//read file	
+//		Scanner userInput = new Scanner(System.in);
+//
+//		//print error message for no command line
+//		if(args.length == 0) {
+//			System.err.println("No command line argument specified");
+//			System.exit(5);
+//		}
+//		File j = new File(args[0]); 
+//		
+//		//print error message if file doesn't exist
+//		try{
+//			Scanner in = new Scanner(j);	
+//		} catch(FileNotFoundException e) {
+//			System.err.println("File provided as the argument does not exist");
+//			System.exit(5);
+//		}
+//		Scanner in = new Scanner(j);
+//		in.nextLine();
+//		
+//		//ArrayList to store ArrayList of Strings from CSV File		
+//		ArrayList <String> CSVRow;
+//		Restaurant tempRestaurant;
+//		
+//		//creates ArrayLists from the CSV file
+//		while(in.hasNextLine()) {
+//			CSVRow = splitCSVLine(in.nextLine());
+//
+//			//creates Date class
+//			//creates Restaurant class
+//			int score;
+//			String risk = "";
+//			boolean duplicate = false;
+//		
+//			String actualDate = "";
+//			String tempDate = CSVRow.get(11);
+//			if(!CSVRow.get(12).contentEquals("")) {
+//				score = Integer.parseInt(CSVRow.get(12));
+//			} else {
+//				score = 0;
+//			}
+//			String violation = CSVRow.get(15);
+//			if(CSVRow.size()==16) {
+//				risk = "";
+//			} else{
+//				risk = CSVRow.get(16); 
+//			}
+//			
+//			//cuts String off at space
+//			for(int i = 7; i < 13; i++) {
+//				if (tempDate.charAt(i) == ' ') {
+//					actualDate = tempDate.substring(0, i);
+//				}
+//			}
+//			String name = CSVRow.get(1);
+//			String zip = CSVRow.get(5);
+//			String address = CSVRow.get(2);
+//			String phone = CSVRow.get(9);
+//			
+//			//creates uniformity for date in MM/DD/YYYY format
+//			if(actualDate.charAt(1) == '/') {
+//				actualDate = "0" + actualDate;
+//			}
+//			if(actualDate.charAt(4) == '/') {
+//				actualDate = actualDate.substring(0,3) + "0" + actualDate.substring(3);
+//			}
+//
+//			//creates a Date
+//			Date date = new Date(actualDate);
+//			
+//			//creates an Inspection
+//			Inspection inspect = new Inspection(UUID.randomUUID(), date, score, violation, risk);
+//			
+//			//creates Restaurant and adds to RestaurantList
+//			try{
+//				tempRestaurant = new Restaurant(UUID.randomUUID(), name, zip, address, phone);
+//			} catch(IllegalArgumentException e) {
+//				//quietly ignore bad ZIP data and skip over restaurant
+//				continue;
+//			}			
+//			Iterator<Restaurant> itr = resList.iterator();
+//			while(itr.hasNext()) {
+//				Restaurant r = itr.next();
+//				if(tempRestaurant.equals(r)){
+//					duplicate = true;
+//					//adds inspection to existing Restaurant object
+//					r.getInspections().add(inspect);
+//					break;
+//				}
+//			}
+//			if(!duplicate) { //the current restaurant was not a duplicate
+//				
+//				//add the restaurant and its inspection to resList
+//				tempRestaurant.addInspection(inspect);
+//				resList.add(tempRestaurant); 
+//			}
+//			duplicate = false;
+//		}
+//
+//		//C:\Users\Alan\Downloads\SF_restaurant_scores_full.csv
+//		
+//		
+//		long endTime = System.nanoTime();
+//		long remainder = (endTime - startTime)%1000000000;
+//		long duration = (endTime - startTime)/1000000000; //convert milliseconds to seconds
+//		System.out.println("Duration: " + duration + "." + remainder + " seconds");
+//		
+//		// time to make POST request
+//		System.out.println(resList.size());
 		
-		//initializing ArrayLists to store each Object Type
-		RestaurantList resList = new RestaurantList();
-		
-		//read file	
-		Scanner userInput = new Scanner(System.in);
-
-		//print error message for no command line
-		if(args.length == 0) {
-			System.err.println("No command line argument specified");
-			System.exit(5);
-		}
-		File j = new File(args[0]); 
-		
-		//print error message if file doesn't exist
-		try{
-			Scanner in = new Scanner(j);	
-		} catch(FileNotFoundException e) {
-			System.err.println("File provided as the argument does not exist");
-			System.exit(5);
-		}
-		Scanner in = new Scanner(j);
-		in.nextLine();
-		
-		//ArrayList to store ArrayList of Strings from CSV File		
-		ArrayList <String> CSVRow;
-		Restaurant tempRestaurant;
-		
-		//creates ArrayLists from the CSV file
-		while(in.hasNextLine()) {
-			CSVRow = splitCSVLine(in.nextLine());
-
-			//creates Date class
-			//creates Restaurant class
-			int score;
-			String risk = "";
-			boolean duplicate = false;
-		
-			String actualDate = "";
-			String tempDate = CSVRow.get(11);
-			if(!CSVRow.get(12).contentEquals("")) {
-				score = Integer.parseInt(CSVRow.get(12));
-			} else {
-				score = 0;
-			}
-			String violation = CSVRow.get(15);
-			if(CSVRow.size()==16) {
-				risk = "";
-			} else{
-				risk = CSVRow.get(16); 
-			}
-			
-			//cuts String off at space
-			for(int i = 7; i < 13; i++) {
-				if (tempDate.charAt(i) == ' ') {
-					actualDate = tempDate.substring(0, i);
-				}
-			}
-			String name = CSVRow.get(1);
-			String zip = CSVRow.get(5);
-			String address = CSVRow.get(2);
-			String phone = CSVRow.get(9);
-			
-			//creates uniformity for date in MM/DD/YYYY format
-			if(actualDate.charAt(1) == '/') {
-				actualDate = "0" + actualDate;
-			}
-			if(actualDate.charAt(4) == '/') {
-				actualDate = actualDate.substring(0,3) + "0" + actualDate.substring(3);
-			}
-
-			//creates a Date
-			Date date = new Date(actualDate);
-			
-			//creates an Inspection
-			Inspection inspect = new Inspection(UUID.randomUUID(), date, score, violation, risk);
-			
-			//creates Restaurant and adds to RestaurantList
-			try{
-				tempRestaurant = new Restaurant(UUID.randomUUID(), name, zip, address, phone);
-			} catch(IllegalArgumentException e) {
-				//quietly ignore bad ZIP data and skip over restaurant
-				continue;
-			}			
-			Iterator<Restaurant> itr = resList.iterator();
-			while(itr.hasNext()) {
-				Restaurant r = itr.next();
-				if(tempRestaurant.equals(r)){
-					duplicate = true;
-					//adds inspection to existing Restaurant object
-					r.getInspections().add(inspect);
-					break;
-				}
-			}
-			if(!duplicate) { //the current restaurant was not a duplicate
-				
-				//add the restaurant and its inspection to resList
-				tempRestaurant.addInspection(inspect);
-				resList.add(tempRestaurant); 
-			}
-			duplicate = false;
-		}
-
-		//C:\Users\Alan\Downloads\SF_restaurant_scores_full.csv
+//		var values = new HashMap<String, String>() {{
+//			put("name", "Ippudo Ramen");
+//			put("zip", "94103");
+//		}};
+//		
+//		
+//		var objectMapper = new ObjectMapper();
+//		String requestBody = objectMapper
+//				.writeValueAsString(values);
+//		
+//		HttpClient client = HttpClient.newHttpClient();
+//		HttpRequest request = HttpRequest.newBuilder()
+//				.uri(URI.create("http://localhost:8080/api/v1/restaurant"))
+//				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
+//				.build();
+//		
+//		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//		
+//		System.out.println(response.body());
 		
 		
-		long endTime = System.nanoTime();
-		long remainder = (endTime - startTime)%1000000000;
-		long duration = (endTime - startTime)/1000000000; //convert milliseconds to seconds
-		System.out.println("Duration: " + duration + "." + remainder + " seconds");
-		
-		// time to make POST request
-		System.out.println(resList.size());
 		
 		
 //		boolean x = true;

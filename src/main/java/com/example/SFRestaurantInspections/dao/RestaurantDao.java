@@ -19,6 +19,10 @@ public interface RestaurantDao {
 	
 	Optional<Restaurant> selectRestaurantById(UUID id);
 	
+	Optional<Restaurant> selectRestaurantByNameAndId(String name, UUID id);
+	
+	Optional<Restaurant> selectRestaurantByNameAndZip(String name, String zip);
+	
 	List<Restaurant> selectRestaurantsByName(String name);
 	
 	List<Restaurant> selectRestaurantsByZip(String zip);

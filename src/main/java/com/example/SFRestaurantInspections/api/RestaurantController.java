@@ -49,6 +49,18 @@ public class RestaurantController {
 				.orElse(null);
 	}
 	
+	@GetMapping(path = "{id}", params = {"name"})
+	public Restaurant getRestaurantByNameAndId(@RequestParam String name, @PathVariable("id") UUID id) {
+		return resService.getRestaurantByNameAndId(name, id)
+				.orElse(null);
+	}
+	
+	@GetMapping(params = {"name", "zip"})
+	public Restaurant getRestaurantByNameAndZip(@RequestParam String name, @RequestParam String zip) {
+		return resService.getRestaurantByNameAndZip(name, zip)
+				.orElse(null);
+	}
+	
 	@GetMapping(params = {"name"})
 	public List<Restaurant> getRestaurantByName(@RequestParam String name) {
 		return resService.getRestaurantByName(name);
