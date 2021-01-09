@@ -26,28 +26,47 @@ public class RestaurantDataAccessService implements RestaurantDao{
 	@Override
 	public int insertRestaurant(UUID id, Restaurant res) {
 		res.setId(id);
-		String sql = "" + 
-				"INSERT INTO restaurant (" + 
-				" id," + 
-				" name," + 
-				" zip," + 
-				" address," + 
-				" phone) " + 
-				" VALUES (?, ?, ?, ?, ?)";
 		
-		return jdbcTemplate.update(
-                sql,
-                res.getId(),
-                res.getName(),
-                res.getZip(),
-                res.getAddress(),
-                res.getPhone()
-		);
+		String queryForExistingRestaurant = "" +
+				"SELECT id FROM restaurant WHERE LOWER(name) = ? AND LOWER(zip) = ?";
+		
+		try {
+			@SuppressWarnings("deprecation")
+			UUID foundId = jdbcTemplate.queryForObject(queryForExistingRestaurant, new Object[] {res.getName().toLowerCase(), res.getZip().toLowerCase()}, 
+					(resultSet, i) -> {
+				UUID personId = UUID.fromString(resultSet.getString("id"));
+				return personId;
+			});
+			
+			System.out.println(foundId);
+			// if we make it here, then there was a matching restaurant so we should just use the ID and insert new inspections
+			return -1;
+		}
+		catch (Exception e) {
+			// getting here means there was no restaurant that matched the same name and ZIP code
+			// which means we can insert a new restaurant
+			String sql = "" + 
+					"INSERT INTO restaurant (" + 
+					" id," + 
+					" name," + 
+					" zip," + 
+					" address," + 
+					" phone) " + 
+					" VALUES (?, ?, ?, ?, ?)";
+			
+			return jdbcTemplate.update(
+	                sql,
+	                res.getId(),
+	                res.getName(),
+	                res.getZip(),
+	                res.getAddress(),
+	                res.getPhone()
+			);
+		}
 	}
 
 	@Override
 	public List<Restaurant> selectAllRestaurants() {
-//		final String sql = "SELECT id, name, zip, address, phone FROM restaurant"; 
 		final String sql = "SELECT r.*, i.* FROM restaurant r LEFT JOIN inspection i ON i.restaurant_id = r.id";
 		List<Restaurant> res = new ArrayList<Restaurant>();
 		List<Restaurant> r = jdbcTemplate.query(
@@ -57,7 +76,8 @@ public class RestaurantDataAccessService implements RestaurantDao{
 			for(Restaurant temp : res) {
 				String name1 = resultSet.getString("name");
 				String zip1 = resultSet.getString("zip");
-				if(temp.getName().equals(name1) && temp.getZip().equals(zip1)) {
+				String d = resultSet.getString("date");
+				if(d != null && temp.getName().equals(name1) && temp.getZip().equals(zip1)) {
 					Date date = new Date(resultSet.getString("date"));
 					Integer score = resultSet.getInt("score");
 					String violation = resultSet.getString("violation");
